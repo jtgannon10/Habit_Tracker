@@ -59,7 +59,7 @@
             flex-grow: 1;
         }
         button:hover {
-            background-color: #45a049;
+            background-color: var(--main-color-hover, #45a049);
         }
         .actions {
             margin: 20px 0;
@@ -179,6 +179,7 @@
             const savedColor = localStorage.getItem('themeColor');
             if (savedColor) {
                 document.documentElement.style.setProperty('--main-color', savedColor);
+                document.documentElement.style.setProperty('--main-color-hover', adjustBrightness(savedColor, -20));
                 document.getElementById('colorSelector').value = savedColor;
             }
         };
@@ -187,8 +188,29 @@
         document.getElementById('colorSelector').addEventListener('input', function() {
             const selectedColor = this.value;
             document.documentElement.style.setProperty('--main-color', selectedColor);
+            document.documentElement.style.setProperty('--main-color-hover', adjustBrightness(selectedColor, -20));
             localStorage.setItem('themeColor', selectedColor);  // Save the color in localStorage
         });
+
+        // Function to adjust the brightness of the color
+        function adjustBrightness(color, amount) {
+            let usePound = false;
+            if (color[0] === "#") {
+                color = color.slice(1);
+                usePound = true;
+            }
+
+            let num = parseInt(color, 16);
+            let r = (num >> 16) + amount;
+            let g = ((num >> 8) & 0x00FF) + amount;
+            let b = (num & 0x0000FF) + amount;
+
+            r = Math.min(Math.max(0, r), 255);
+            g = Math.min(Math.max(0, g), 255);
+            b = Math.min(Math.max(0, b), 255);
+
+            return (usePound ? "#" : "") + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
+        }
     </script>
 </body>
 </html>
