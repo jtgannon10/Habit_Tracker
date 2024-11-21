@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Habit Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #fff;
+        }
+        h1 {
+            text-align: center;
+            color: var(--main-color, #4CAF50);
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        form label {
+            margin-bottom: 5px;
+            color: #333;
+        }
+        form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        form button {
+            background-color: var(--main-color, #4CAF50);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        form button:hover {
+            background-color: var(--main-color-hover, #45a049);
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .back-link a {
+            color: var(--main-color, #4CAF50);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+        @media print {
+            form, .back-link {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Delete Habit Data for a Specific Date</h1>
+    <form action="{{ url_for('remove_date') }}" method="POST">
+        <label for="date">Enter Date to Delete:</label>
+        <input type="date" id="date" name="date" required>
+
+        <button type="submit">Delete Data</button>
+    </form>
+
+    <div class="back-link">
+        <a href="{{ url_for('habit_tracker') }}">Go Back to Homepage</a>
+    </div>
+
+    <script>
+        // Apply the saved theme color when the page loads
+        window.addEventListener('load', function() {
+            const storedColor = localStorage.getItem('themeColor');
+            if (storedColor) {
+                document.documentElement.style.setProperty('--main-color', storedColor);
+                document.documentElement.style.setProperty('--main-color-hover', adjustBrightness(storedColor, -20));
+            }
+        });
+
+        // Function to adjust the brightness of the color
+        function adjustBrightness(color, amount) {
+            let usePound = false;
+            if (color[0] === "#") {
+                color = color.slice(1);
+                usePound = true;
+            }
+
+            let num = parseInt(color, 16);
+            let r = (num >> 16) + amount;
+            let g = ((num >> 8) & 0x00FF) + amount;
+            let b = (num & 0x0000FF) + amount;
+
+            r = Math.min(Math.max(0, r), 255);
+            g = Math.min(Math.max(0, g), 255);
+            b = Math.min(Math.max(0, b), 255);
+
+            return (usePound ? "#" : "") + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
+        }
+    </script>
+</body>
+</html>

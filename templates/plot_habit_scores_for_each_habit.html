@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Habit Values Over Time</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #fff;
+        }
+        h1, h2 {
+            text-align: center;
+            color: var(--main-color, #4CAF50);
+        }
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        form label {
+            margin-right: 10px;
+        }
+        form input {
+            padding: 5px;
+            margin-right: 10px;
+        }
+        form button {
+            background-color: var(--main-color, #4CAF50);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+        form button:hover {
+            background-color: var(--main-color-hover, #45a049);
+        }
+        .plot-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .plot-container img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .button-container a button {
+            background-color: var(--main-color, #4CAF50);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+        .button-container a button:hover {
+            background-color: var(--main-color-hover, #45a049);
+        }
+        @media print {
+            body {
+                background-color: #fff;
+                color: #000;
+            }
+            form, .button-container {
+                display: none;
+            }
+            .plot-container img {
+                border: none;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Habit Scores for Each Habit</h1>
+
+    <!-- Form for resizing plots -->
+    <form action="{{ url_for('plot_habit_scores_for_each_habit') }}" method="get">
+        <label for="width">Width:</label>
+        <input type="number" id="width" name="width" value="{{ current_width }}" required>
+        <label for="height">Height:</label>
+        <input type="number" id="height" name="height" value="{{ current_height }}" required>
+        <br>
+        <label for="x_fontsize">x-Label Font Size:</label>
+        <input type="number" id="x_fontsize" name="x_fontsize" value="{{ current_x_fontsize }}" required>
+        <label for="y_fontsize">y-Label Font Size:</label>
+        <input type="number" id="y_fontsize" name="y_fontsize" value="{{ current_y_fontsize }}" required>
+        <label for="title_fontsize">Title Font Size:</label>
+        <input type="number" id="title_fontsize" name="title_fontsize" value="{{ current_title_fontsize }}" required>
+        <br>
+        <button type="submit">Resize Plots</button>
+    </form>
+
+    <div class="plot-container">
+        <h2>Daily</h2>
+        <img src="{{ url_for('static', filename=plot_daily_data) }}?{{ timestamp }}" alt="Daily Habit Tracker Plot">
+    </div>
+    <div class="plot-container">
+        <h2>Weekly</h2>
+        <img src="{{ url_for('static', filename=plot_weekly_data) }}?{{ timestamp }}" alt="Weekly Habit Tracker Plot">
+    </div>
+    <div class="plot-container">
+        <h2>Monthly</h2>
+        <img src="{{ url_for('static', filename=plot_monthly_data) }}?{{ timestamp }}" alt="Weekly Habit Tracker Plot">
+    </div>
+    <div class="plot-container">
+        <h2>Yearly</h2>
+        <img src="{{ url_for('static', filename=plot_yearly_data) }}?{{ timestamp }}" alt="Weekly Habit Tracker Plot">
+    </div>
+
+    <div class="button-container">
+        <a href="{{ url_for('habit_tracker') }}">
+            <button type="button">Back to Main Page</button>
+        </a>
+    </div>
+
+    <script>
+        // Apply the saved theme color when the page loads
+        window.addEventListener('load', function() {
+            const storedColor = localStorage.getItem('themeColor');
+            if (storedColor) {
+                document.documentElement.style.setProperty('--main-color', storedColor);
+                document.documentElement.style.setProperty('--main-color-hover', adjustBrightness(storedColor, -20));
+            }
+        });
+
+        // Function to adjust the brightness of the color
+        function adjustBrightness(color, amount) {
+            let usePound = false;
+            if (color[0] === "#") {
+                color = color.slice(1);
+                usePound = true;
+            }
+
+            let num = parseInt(color, 16);
+            let r = (num >> 16) + amount;
+            let g = ((num >> 8) & 0x00FF) + amount;
+            let b = (num & 0x0000FF) + amount;
+
+            r = Math.min(Math.max(0, r), 255);
+            g = Math.min(Math.max(0, g), 255);
+            b = Math.min(Math.max(0, b), 255);
+
+            return (usePound ? "#" : "") + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
+        }
+    </script>
+</body>
+</html>

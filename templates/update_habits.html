@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Habits</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #fff;
+        }
+        h1 {
+            text-align: center;
+            color: var(--main-color, #4CAF50);
+        }
+        .messages {
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+        }
+        .messages ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .messages li {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            color: white;
+        }
+        .flash-success {
+            background-color: var(--main-color, #4CAF50);
+        }
+        .flash-error {
+            background-color: #f44336;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        form label {
+            margin-bottom: 5px;
+            color: #333;
+        }
+        form input, form select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        form button {
+            background-color: var(--main-color, #4CAF50);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        form button:hover {
+            background-color: var(--main-color-hover, #45a049);
+        }
+        fieldset {
+            width: 100%;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        legend {
+            color: var(--main-color, #4CAF50);
+            padding: 0 10px;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .back-link a {
+            color: var(--main-color, #4CAF50);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+        @media print {
+            .messages, form, .back-link {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul>
+                    {% for category, message in messages %}
+                        <li class="flash-{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <h1>Update Habits</h1>
+
+    <form action="{{ url_for('update_habits') }}" method="POST">
+        <label for="date">Select Date:</label>
+        <input type="date" id="date" name="date" value="{{ selected_date }}" required>
+        <button type="submit" name="action" value="Load Habits">Load Habits</button>
+        <br>
+
+        {% for habit in habits %}
+        <fieldset>
+            <legend>{{ habit['name'] }}</legend>
+            <p><strong>Description:</strong> {{ habit['description'] }}</p>
+            <p><strong>Frequency:</strong> {{ habit['frequency'] }}</p>
+
+            <label for="morning_score_{{ habit['name'] }}">Morning:</label>
+            <select name="morning_score_{{ habit['name'] }}" id="morning_score_{{ habit['name'] }}">
+                <option value="1" {% if habit_values.get(habit['name'] ~ '_morning') == "1" %}selected{% endif %}>
+                    Completed and good
+                </option>
+                <option value="0" {% if habit_values.get(habit['name'] ~ '_morning') == "0" %}selected{% endif %}>
+                    Not completed
+                </option>
+                <option value="-1" {% if habit_values.get(habit['name'] ~ '_morning') == "-1" %}selected{% endif %}>
+                    Completed but bad
+                </option>
+                <option value="" {% if habit_values.get(habit['name'] ~ '_morning') is none or habit_values.get(habit['name'] ~ '_morning') == "" %}selected{% endif %}>
+                    None
+                </option>
+            </select><br>
+
+            <label for="midday_score_{{ habit['name'] }}">Midday:</label>
+            <select name="midday_score_{{ habit['name'] }}" id="midday_score_{{ habit['name'] }}">
+                <option value="1" {% if habit_values.get(habit['name'] ~ '_midday') == "1" %}selected{% endif %}>
+                    Completed and good
+                </option>
+                <option value="0" {% if habit_values.get(habit['name'] ~ '_midday') == "0" %}selected{% endif %}>
+                    Not completed
+                </option>
+                <option value="-1" {% if habit_values.get(habit['name'] ~ '_midday') == "-1" %}selected{% endif %}>
+                    Completed but bad
+                </option>
+                <option value="" {% if habit_values.get(habit['name'] ~ '_midday') is none or habit_values.get(habit['name'] ~ '_midday') == "" %}selected{% endif %}>
+                    None
+                </option>
+            </select><br>
+
+            <label for="night_score_{{ habit['name'] }}">Night:</label>
+            <select name="night_score_{{ habit['name'] }}" id="night_score_{{ habit['name'] }}">
+                <option value="1" {% if habit_values.get(habit['name'] ~ '_night') == "1" %}selected{% endif %}>
+                    Completed and good
+                </option>
+                <option value="0" {% if habit_values.get(habit['name'] ~ '_night') == "0" %}selected{% endif %}>
+                    Not completed
+                </option>
+                <option value="-1" {% if habit_values.get(habit['name'] ~ '_night') == "-1" %}selected{% endif %}>
+                    Completed but bad
+                </option>
+                <option value="" {% if habit_values.get(habit['name'] ~ '_night') is none or habit_values.get(habit['name'] ~ '_night') == "" %}selected{% endif %}>
+                    None
+                </option>
+            </select><br>
+        </fieldset>
+        {% endfor %}
+        
+        <button type="submit" name="action" value="Update Habits">Update Habits</button>
+    </form>
+
+    <div class="back-link">
+        <a href="{{ url_for('habit_tracker') }}">Go Back to Homepage</a>
+    </div>
+
+    <script>
+        // Apply the saved theme color when the page loads
+        window.addEventListener('load', function() {
+            const storedColor = localStorage.getItem('themeColor');
+            if (storedColor) {
+                document.documentElement.style.setProperty('--main-color', storedColor);
+                document.documentElement.style.setProperty('--main-color-hover', adjustBrightness(storedColor, -20));
+            }
+        });
+
+        // Function to adjust the brightness of the color
+        function adjustBrightness(color, amount) {
+            let usePound = false;
+            if (color[0] === "#") {
+                color = color.slice(1);
+                usePound = true;
+            }
+
+            let num = parseInt(color, 16);
+            let r = (num >> 16) + amount;
+            let g = ((num >> 8) & 0x00FF) + amount;
+            let b = (num & 0x0000FF) + amount;
+
+            r = Math.min(Math.max(0, r), 255);
+            g = Math.min(Math.max(0, g), 255);
+            b = Math.min(Math.max(0, b), 255);
+
+            return (usePound ? "#" : "") + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
+        }
+    </script>
+</body>
+</html>

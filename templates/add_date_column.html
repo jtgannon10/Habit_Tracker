@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Date Column</title>
+</head>
+<body>
+    <h1>Add New Date Column</h1>
+    <form method="POST" action="{{ url_for('add_date_column') }}">
+        <label for="new_date">Select a Date:</label>
+        <input type="date" id="new_date" name="new_date" value="{{ selected_date }}" required>
+        <button type="submit">Add Date Column</button>
+    </form>
+    <a href="{{ url_for('habit_tracker') }}">Back to Habit Tracker</a>
+</body>
+</html>
+

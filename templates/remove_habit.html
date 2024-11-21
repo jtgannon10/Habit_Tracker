@@ -1,0 +1,19 @@
+<form method="POST" action="{{ url_for('submit_habits') }}">
+    <input type="hidden" name="date" value="{{ date }}">
+    {% for habit in habits %}
+        <div>
+            <label for="habit_{{ habit }}">{{ habit }}</label>
+            <input type="number" name="habit_{{ habit }}_morning" placeholder="Morning Value">
+            <input type="number" name="habit_{{ habit }}_midday" placeholder="Midday Value">
+            <input type="number" name="habit_{{ habit }}_night" placeholder="Night Value">
+        </div>
+
+        <!-- Add the Remove Habit Form Here -->
+        <form method="POST" action="{{ url_for('remove_habit') }}">
+            <input type="hidden" name="remove_habit" value="{{ habit }}">
+            <button type="submit">Remove Habit</button>
+        </form>
+    {% endfor %}
+    <button type="submit">Submit</button>
+</form>
+

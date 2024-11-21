@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Habit Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: var(--main-color, #4CAF50);
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        main {
+            padding: 20px;
+        }
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: var(--main-color, #4CAF50);
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+        .gray-row {
+            background-color: #d3d3d3;
+            height: 10px;
+        }
+        button {
+            background-color: var(--main-color, #4CAF50);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            flex-grow: 1;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .actions {
+            margin: 20px 0;
+        }
+        .actions form, .actions a {
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .color-picker {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Habit Tracker</h1>
+    </header>
+    <main>
+        <section class="actions">
+            <h2>Subscribe</h2>
+            <div class="action-buttons">
+                <form action="{{ url_for('subscribe') }}" method="GET">
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
+            <h2>Actions</h2>
+            <div class="action-buttons">
+                <form action="/upload_excel" method="POST" enctype="multipart/form-data">
+                    <input type="file" name="file" accept=".xlsx, .xls">
+                    <button type="submit">Upload</button>
+                </form>
+                <form action="{{ url_for('download_excel') }}" method="GET">
+                    <button type="submit">Download Excel File</button>
+                </form>
+                <a href="{{ url_for('add_habit') }}">
+                    <button type="button">Add New Habit</button>
+                </a>
+                <a href="{{ url_for('edit_habit') }}">
+                    <button type="button">Edit Habit</button>
+                </a>
+                <a href="{{ url_for('update_habits') }}">
+                    <button type="button">Update Habits</button>
+                </a>
+                <a href="{{ url_for('set_goals') }}">
+                    <button type="button">Set Goals</button>
+                </a>
+                <a href="{{ url_for('remove_date') }}">
+                    <button type="button">Remove Date</button>
+                </a>
+                <a href="{{ url_for('plot_habit_scores') }}">
+                    <button type="button">View Habit Scores Plots</button>
+                </a>
+                <a href="{{ url_for('plot_habit_scores_for_each_habit') }}">
+                    <button type="button">View Habit Scores for Each Habit Plots</button>
+                </a>
+            </div>
+            <div class="color-picker">
+                <label for="colorSelector">Choose Theme Color: </label>
+                <input type="color" id="colorSelector" name="colorSelector" value="#4CAF50">
+            </div>
+        </section>
+
+        {% if name_description_frequency_goal_s %}
+        <section id="tracked-habits">
+            <h2>Tracked Habits</h2>
+            <ol>
+                {% for name_description_frequency_goal in name_description_frequency_goal_s %}
+                <li>
+                    <strong>Name:</strong> {{ name_description_frequency_goal['name'] }} <br>
+                    <strong>Description:</strong> {{ name_description_frequency_goal['description'] }} <br>
+                    <strong>Frequency:</strong> {{ name_description_frequency_goal['frequency'] }} <br>
+                    <strong>Goal:</strong> {{ name_description_frequency_goal['goal'] }} <br>
+                    <form action="{{ url_for('remove_habit', name=name_description_frequency_goal['name']) }}" method="POST" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                    <br><br>
+                </li>
+                {% endfor %}
+            </ol>
+        </section>
+
+        <section id="habit-data">
+            <h2>Habit Data</h2>
+            <table>
+                <thead>
+                    <tr>
+                        {% for column in columns if column not in ['description', 'frequency', 'goal']%} <!-- Exclude "description", "frequency", and "goal" -->
+                            <th>{{ column }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in table_data %}
+                        <tr>
+                            {% for column in columns if column not in ['description', 'frequency', 'goal']%} <!-- Exclude "description", "frequency", and "goal" -->
+                                <td>{{ row[column] }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% if loop.index % 3 == 0 %}
+                        <tr class="gray-row">
+                            <td colspan="{{ columns|length - 1 }}"></td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+        {% else %}
+        <section>
+            <p>No habits tracked yet. Add a new habit to get started!</p>
+        </section>
+        {% endif %}
+    </main>
+    <script>
+        // On page load, set the color from localStorage if available
+        window.onload = function() {
+            const savedColor = localStorage.getItem('themeColor');
+            if (savedColor) {
+                document.documentElement.style.setProperty('--main-color', savedColor);
+                document.getElementById('colorSelector').value = savedColor;
+            }
+        };
+
+        // On color selection, save the color to localStorage
+        document.getElementById('colorSelector').addEventListener('input', function() {
+            const selectedColor = this.value;
+            document.documentElement.style.setProperty('--main-color', selectedColor);
+            localStorage.setItem('themeColor', selectedColor);  // Save the color in localStorage
+        });
+    </script>
+</body>
+</html>
