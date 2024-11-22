@@ -99,19 +99,19 @@
 
     <div class="plot-container">
         <h2>Daily</h2>
-        <img src="{{ url_for('static', filename=plot_daily_data) }}?{{ timestamp }}" alt="Daily Habit Tracker Plot">
+        <img src="{{ url_for('plot_daily_data') }}?{{ timestamp }}" alt="Daily Habit Tracker Plot">
     </div>
     <div class="plot-container">
         <h2>Weekly</h2>
-        <img src="{{ url_for('static', filename=plot_weekly_data) }}?{{ timestamp }}" alt="Weekly Habit Tracker Plot">
+        <img src="{{ url_for('plot_weekly_data') }}?{{ timestamp }}" alt="Weekly Habit Tracker Plot">
     </div>
     <div class="plot-container">
         <h2>Monthly</h2>
-        <img src="{{ url_for('static', filename=plot_monthly_data) }}?{{ timestamp }}" alt="Weekly Habit Tracker Plot">
+        <img src="{{ url_for('plot_monthly_data') }}?{{ timestamp }}" alt="Weekly Habit Tracker Plot">
     </div>
     <div class="plot-container">
         <h2>Yearly</h2>
-        <img src="{{ url_for('static', filename=plot_yearly_data) }}?{{ timestamp }}" alt="Weekly Habit Tracker Plot">
+        <img src="{{ url_for('plot_yearly_data') }}?{{ timestamp }}" alt="Weekly Habit Tracker Plot">
     </div>
 
     <div class="button-container">
