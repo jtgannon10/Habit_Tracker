@@ -502,6 +502,10 @@ def set_goals():
 
 @app.route('/plot_habit_scores_for_each_habit', methods=['GET'])
 def plot_habit_scores_for_each_habit():
+
+    global global_excel_df
+    global global_columns
+
     # Get width and height from query parameters, or use default values
     width = int(request.args.get('width', 10))  # Default to 10
     height = int(request.args.get('height', 7))  # Default to 7
@@ -509,34 +513,20 @@ def plot_habit_scores_for_each_habit():
     y_fontsize = int(request.args.get('y_fontsize', 14))  # Default to 14
     title_fontsize = int(request.args.get('title_fontsize', 16))  # Default to 16
 
-    daily_img_filename = 'daily_habit_scores_for_each_habit_plots.png'
-    weekly_img_filename = 'weekly_habit_scores_for_each_habit_plots.png'
-    monthly_img_filename = 'monthly_habit_scores_for_each_habit_plots.png'
-    yearly_img_filename = 'yearly_habit_scores_for_each_habit_plots.png'
+    frequencies = ['daily', 'weekly', 'monthly', 'yearly']
+    plots = {}
 
-    if global_excel_df.shape[1] != 5:
+    if global_excel_df.shape[1] != len(global_columns):
+        for freq in frequencies:
+            buf = generate_timeUnitly_habit_plot(freq, width, height, x_fontsize, y_fontsize, title_fontsize)
+            # Encode plot to base64
+            plots[freq] = base64.b64encode(buf.getvalue()).decode('utf-8')
 
-        # Generate daily plots
-        generate_timeUnitly_for_each_habit_plots('daily', width, height, x_fontsize, y_fontsize, title_fontsize)
-
-        # Generate weekly plots
-        generate_timeUnitly_for_each_habit_plots('weekly', width, height, x_fontsize, y_fontsize, title_fontsize)
-
-        # Generate monthly plots
-        generate_timeUnitly_for_each_habit_plots('monthly', width, height, x_fontsize, y_fontsize, title_fontsize)
-
-        # Generate yearly plots
-        generate_timeUnitly_for_each_habit_plots('yearly', width, height, x_fontsize, y_fontsize, title_fontsize)
-
-    # Append a random query parameter to bypass cache
-    timestamp = int(time.time())
+    # Pass the plot data and other parameters to the template
     return render_template(
-        'plot_habit_scores_for_each_habit.html', 
-        plot_daily_data=daily_img_filename, 
-        plot_weekly_data=weekly_img_filename,
-        plot_monthly_data=monthly_img_filename,
-        plot_yearly_data=yearly_img_filename, 
-        timestamp=timestamp,
+        'plot_habit_scores_for_each_habit.html',
+        plots=plots,
+        timestamp=int(time.time()),
         current_width=width,
         current_height=height,
         current_x_fontsize=x_fontsize,
@@ -620,20 +610,20 @@ def generate_timeUnitly_for_each_habit_plots(frequency, width, height, x_fontsiz
         for j in range(i + 1, len(axes)):
             fig.delaxes(axes[j])
 
-    # Save the plot to the static folder
-    static_folder = 'static'
-    if not os.path.exists(static_folder):
-        os.makedirs(static_folder)
-
-    # Save plot to a static folder (make sure this directory exists)
-    img_filename = f'{frequency}_habit_scores_for_each_habit_plots.png'
-    img_filepath = os.path.join('static', img_filename)
-    plt.savefig(img_filepath)
-    plt.close()
+    # Save plot to buf
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    plt.close(fig)
+    return buf
 
 
 @app.route('/plot_habit_scores')
 def plot_habit_scores():
+
+    global global_excel_df
+    global global_columns
+
     # Get width and height from query parameters, or use default values
     width = int(request.args.get('width', 10))  # Default to 10
     height = int(request.args.get('height', 7))  # Default to 7
@@ -641,10 +631,14 @@ def plot_habit_scores():
     y_fontsize = int(request.args.get('y_fontsize', 14))  # Default to 14
     title_fontsize = int(request.args.get('title_fontsize', 16))  # Default to 16
 
-    for freq in frequencies:
-        buf = generate_timeUnitly_habit_plot(freq, width, height, x_fontsize, y_fontsize, title_fontsize)
-        # Encode plot to base64
-        plots[freq] = base64.b64encode(buf.getvalue()).decode('utf-8')
+    frequencies = ['daily', 'weekly', 'monthly', 'yearly']
+    plots = {}
+
+    if global_excel_df.shape[1] != len(global_columns):
+        for freq in frequencies:
+            buf = generate_timeUnitly_habit_plot(freq, width, height, x_fontsize, y_fontsize, title_fontsize)
+            # Encode plot to base64
+            plots[freq] = base64.b64encode(buf.getvalue()).decode('utf-8')
 
     # Pass the plot data and other parameters to the template
     return render_template(
@@ -695,7 +689,7 @@ def generate_timeUnitly_habit_plot(frequency, width, height, x_fontsize, y_fonts
     # print(goal)
 
     # Create the plot
-    plt.figure(figsize=(width, height))
+    fig = plt.figure(figsize=(width, height))
     sns.lineplot(x=timeUnitly_scores.index.tolist(), y=timeUnitly_scores.values, marker='o')
     plt.axhline(y=goal, color='red', linestyle='dotted', linewidth=2)
     plt.title(f'Sum of {frequency} Habit Scores Over Time (Since {start_date})', fontsize=title_fontsize)
@@ -704,12 +698,6 @@ def generate_timeUnitly_habit_plot(frequency, width, height, x_fontsize, y_fonts
     plt.xticks(rotation=45)
     # plt.legend()
     plt.grid()
-
-    # # Save plot to a static folder (make sure this directory exists)
-    # img_filename = f'{frequency}_habit_scores_plot.png'
-    # img_filepath = os.path.join('static', img_filename)
-    # plt.savefig(img_filepath)
-    # plt.close()
 
     # Save plot to buf
     buf = io.BytesIO()
