@@ -97,22 +97,12 @@
         <button type="submit">Resize Plots</button>
     </form>
 
-    <div class="plot-container">
-        <h2>Daily</h2>
-        <img src="{{ url_for('plot_daily_data') }}?{{ timestamp }}" alt="Daily Habit Tracker Plot">
-    </div>
-    <div class="plot-container">
-        <h2>Weekly</h2>
-        <img src="{{ url_for('plot_weekly_data') }}?{{ timestamp }}" alt="Weekly Habit Tracker Plot">
-    </div>
-    <div class="plot-container">
-        <h2>Monthly</h2>
-        <img src="{{ url_for('plot_monthly_data') }}?{{ timestamp }}" alt="Weekly Habit Tracker Plot">
-    </div>
-    <div class="plot-container">
-        <h2>Yearly</h2>
-        <img src="{{ url_for('plot_yearly_data') }}?{{ timestamp }}" alt="Weekly Habit Tracker Plot">
-    </div>
+    {% for freq, plot in plots.items() %}
+        <div class="plot-container">
+            <h2>{{ freq.capitalize() }}</h2>
+            <img src="data:image/png;base64,{{ plot }}" alt="{{ freq }} plot">
+        </div>
+    {% endfor %}
 
     <div class="button-container">
         <a href="{{ url_for('habit_tracker') }}">
