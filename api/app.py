@@ -546,6 +546,8 @@ def plot_habit_scores_for_each_habit():
 
 def generate_timeUnitly_for_each_habit_plots(frequency, width, height, x_fontsize, y_fontsize, title_fontsize):
 
+    global global_excel_df
+
     df = global_excel_df.melt(id_vars=['name', 'time_of_day', 'frequency', 'description', 'goal'], var_name='date', value_name='habit_value')
     df['date'] = pd.to_datetime(df['date'])  # Convert date to datetime format
 
@@ -639,34 +641,16 @@ def plot_habit_scores():
     y_fontsize = int(request.args.get('y_fontsize', 14))  # Default to 14
     title_fontsize = int(request.args.get('title_fontsize', 16))  # Default to 16
 
-    daily_img_filename = 'daily_habit_scores_plot.png'
-    weekly_img_filename = 'weekly_habit_scores_plot.png'
-    monthly_img_filename = 'monthly_habit_scores_plot.png'
-    yearly_img_filename = 'yearly_habit_scores_plot.png'
+    for freq in frequencies:
+        buf = generate_timeUnitly_habit_plot(freq, width, height, x_fontsize, y_fontsize, title_fontsize)
+        # Encode plot to base64
+        plots[freq] = base64.b64encode(buf.getvalue()).decode('utf-8')
 
-    if global_excel_df.shape[1] != 5:
-
-        # Generate daily plot
-        generate_timeUnitly_habit_plot('daily', width, height, x_fontsize, y_fontsize, title_fontsize)
-
-        # Generate weekly plot
-        generate_timeUnitly_habit_plot('weekly', width, height, x_fontsize, y_fontsize, title_fontsize)
-
-        # Generate monthly plot
-        generate_timeUnitly_habit_plot('monthly', width, height, x_fontsize, y_fontsize, title_fontsize)
-
-        # Generate yearly plot
-        generate_timeUnitly_habit_plot('yearly', width, height, x_fontsize, y_fontsize, title_fontsize)
-
-    # Append a random query parameter to bypass cache
-    timestamp = int(time.time())
+    # Pass the plot data and other parameters to the template
     return render_template(
-        'plot_habit_scores.html', 
-        plot_daily_data=daily_img_filename, 
-        plot_weekly_data=weekly_img_filename,
-        plot_monthly_data=monthly_img_filename,
-        plot_yearly_data=yearly_img_filename, 
-        timestamp=timestamp,
+        'plot_habit_scores.html',
+        plots=plots,
+        timestamp=int(time.time()),
         current_width=width,
         current_height=height,
         current_x_fontsize=x_fontsize,
@@ -676,7 +660,10 @@ def plot_habit_scores():
 
 def generate_timeUnitly_habit_plot(frequency, width, height, x_fontsize, y_fontsize, title_fontsize):
 
-    df = global_excel_df.melt(id_vars=['name', 'time_of_day', 'frequency', 'description', 'goal'], var_name='date', value_name='habit_value')
+    global global_excel_df
+    global global_columns
+
+    df = global_excel_df.melt(id_vars=global_columns, var_name='date', value_name='habit_value')
     df['date'] = pd.to_datetime(df['date'])  # Convert date to datetime format
 
     # Extract tracking start time
@@ -718,12 +705,18 @@ def generate_timeUnitly_habit_plot(frequency, width, height, x_fontsize, y_fonts
     # plt.legend()
     plt.grid()
 
-    # Save plot to a static folder (make sure this directory exists)
-    img_filename = f'{frequency}_habit_scores_plot.png'
-    img_filepath = os.path.join('static', img_filename)
-    plt.savefig(img_filepath)
-    plt.close()
+    # # Save plot to a static folder (make sure this directory exists)
+    # img_filename = f'{frequency}_habit_scores_plot.png'
+    # img_filepath = os.path.join('static', img_filename)
+    # plt.savefig(img_filepath)
+    # plt.close()
 
+    # Save plot to buf
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    plt.close(fig)
+    return buf
 
 @app.route('/download_excel', methods=['GET'])
 def download_excel():
