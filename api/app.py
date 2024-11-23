@@ -22,6 +22,20 @@ import io
 app = Flask(__name__)
 # app.secret_key = 'your_secret_key_here'  # Required for flash messages to work
 
+# Load Firebase credentials from environment variable
+firebase_key = os.getenv("FIREBASE_CREDENTIALS")  # Get the JSON string
+if not firebase_key:
+    raise ValueError("Missing Firebase credentials in environment variables!")
+
+firebase_key_dict = json.loads(firebase_key)  # Parse the JSON string into a dictionary
+
+# Initialize Firebase app
+cred = credentials.Certificate(firebase_key_dict)
+firebase_admin.initialize_app(cred)
+
+# Initialize Firestore
+db = firestore.client()
+
 # Initialize global variable for Excel DataFrame
 global_columns = ['name', 'frequency', 'description', 'goal', 'time_of_day']
 global_excel_df = pd.DataFrame(columns=global_columns)
