@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Habit Scores</title>
+    <title>Task Scores</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -78,10 +78,10 @@
     </style>
 </head>
 <body>
-    <h1>Habit Scores Plots</h1>
+    <h1>Task Score for Each Task Over Time</h1>
 
     <!-- Form for resizing plots -->
-    <form action="{{ url_for('plot_habit_scores') }}" method="get">
+    <form action="{{ url_for('plot_task_scores') }}" method="get">
         <label for="width">Width:</label>
         <input type="number" id="width" name="width" value="{{ current_width }}" required>
         <label for="height">Height:</label>
@@ -105,7 +105,7 @@
     {% endfor %}
 
     <div class="button-container">
-        <a href="{{ url_for('habit_tracker') }}">
+        <a href="{{ url_for('task_tracker') }}">
             <button type="button">Back to Main Page</button>
         </a>
     </div>
