@@ -518,7 +518,7 @@ def plot_task_scores_for_each_task():
 
     if global_excel_df.shape[1] != len(global_columns):
         for freq in frequencies:
-            buf = generate_timeUnitly_task_plot(freq, width, height, x_fontsize, y_fontsize, title_fontsize)
+            buf = generate_timeUnitly_for_each_task_plots(freq, width, height, x_fontsize, y_fontsize, title_fontsize)
             # Encode plot to base64
             plots[freq] = base64.b64encode(buf.getvalue()).decode('utf-8')
 
