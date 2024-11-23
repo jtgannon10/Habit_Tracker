@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Update Habits</title>
+    <title>Update Tasks</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -110,75 +110,75 @@
         {% endwith %}
     </div>
 
-    <h1>Update Habits</h1>
+    <h1>Update Tasks</h1>
 
-    <form action="{{ url_for('update_habits') }}" method="POST">
+    <form action="{{ url_for('update_tasks') }}" method="POST">
         <label for="date">Select Date:</label>
         <input type="date" id="date" name="date" value="{{ selected_date }}" required>
-        <button type="submit" name="action" value="Load Habits">Load Habits</button>
+        <button type="submit" name="action" value="Load Tasks">Load Tasks</button>
         <br>
 
-        {% for habit in habits %}
+        {% for task in tasks %}
         <fieldset>
-            <legend>{{ habit['name'] }}</legend>
-            <p><strong>Description:</strong> {{ habit['description'] }}</p>
-            <p><strong>Frequency:</strong> {{ habit['frequency'] }}</p>
+            <legend>{{ task['name'] }}</legend>
+            <p><strong>Description:</strong> {{ task['description'] }}</p>
+            <p><strong>Frequency:</strong> {{ task['frequency'] }}</p>
 
-            <label for="morning_score_{{ habit['name'] }}">Morning:</label>
-            <select name="morning_score_{{ habit['name'] }}" id="morning_score_{{ habit['name'] }}">
-                <option value="1" {% if habit_values.get(habit['name'] ~ '_morning') == "1" %}selected{% endif %}>
+            <label for="morning_score_{{ task['name'] }}">Morning:</label>
+            <select name="morning_score_{{ task['name'] }}" id="morning_score_{{ task['name'] }}">
+                <option value="1" {% if task_values.get(task['name'] ~ '_morning') == "1" %}selected{% endif %}>
                     Completed and good
                 </option>
-                <option value="0" {% if habit_values.get(habit['name'] ~ '_morning') == "0" %}selected{% endif %}>
+                <option value="0" {% if task_values.get(task['name'] ~ '_morning') == "0" %}selected{% endif %}>
                     Not completed
                 </option>
-                <option value="-1" {% if habit_values.get(habit['name'] ~ '_morning') == "-1" %}selected{% endif %}>
+                <option value="-1" {% if task_values.get(task['name'] ~ '_morning') == "-1" %}selected{% endif %}>
                     Completed but bad
                 </option>
-                <option value="" {% if habit_values.get(habit['name'] ~ '_morning') is none or habit_values.get(habit['name'] ~ '_morning') == "" %}selected{% endif %}>
+                <option value="" {% if task_values.get(task['name'] ~ '_morning') is none or task_values.get(task['name'] ~ '_morning') == "" %}selected{% endif %}>
                     None
                 </option>
             </select><br>
 
-            <label for="midday_score_{{ habit['name'] }}">Midday:</label>
-            <select name="midday_score_{{ habit['name'] }}" id="midday_score_{{ habit['name'] }}">
-                <option value="1" {% if habit_values.get(habit['name'] ~ '_midday') == "1" %}selected{% endif %}>
+            <label for="midday_score_{{ task['name'] }}">Midday:</label>
+            <select name="midday_score_{{ task['name'] }}" id="midday_score_{{ task['name'] }}">
+                <option value="1" {% if task_values.get(task['name'] ~ '_midday') == "1" %}selected{% endif %}>
                     Completed and good
                 </option>
-                <option value="0" {% if habit_values.get(habit['name'] ~ '_midday') == "0" %}selected{% endif %}>
+                <option value="0" {% if task_values.get(task['name'] ~ '_midday') == "0" %}selected{% endif %}>
                     Not completed
                 </option>
-                <option value="-1" {% if habit_values.get(habit['name'] ~ '_midday') == "-1" %}selected{% endif %}>
+                <option value="-1" {% if task_values.get(task['name'] ~ '_midday') == "-1" %}selected{% endif %}>
                     Completed but bad
                 </option>
-                <option value="" {% if habit_values.get(habit['name'] ~ '_midday') is none or habit_values.get(habit['name'] ~ '_midday') == "" %}selected{% endif %}>
+                <option value="" {% if task_values.get(task['name'] ~ '_midday') is none or task_values.get(task['name'] ~ '_midday') == "" %}selected{% endif %}>
                     None
                 </option>
             </select><br>
 
-            <label for="night_score_{{ habit['name'] }}">Night:</label>
-            <select name="night_score_{{ habit['name'] }}" id="night_score_{{ habit['name'] }}">
-                <option value="1" {% if habit_values.get(habit['name'] ~ '_night') == "1" %}selected{% endif %}>
+            <label for="night_score_{{ task['name'] }}">Night:</label>
+            <select name="night_score_{{ task['name'] }}" id="night_score_{{ task['name'] }}">
+                <option value="1" {% if task_values.get(task['name'] ~ '_night') == "1" %}selected{% endif %}>
                     Completed and good
                 </option>
-                <option value="0" {% if habit_values.get(habit['name'] ~ '_night') == "0" %}selected{% endif %}>
+                <option value="0" {% if task_values.get(task['name'] ~ '_night') == "0" %}selected{% endif %}>
                     Not completed
                 </option>
-                <option value="-1" {% if habit_values.get(habit['name'] ~ '_night') == "-1" %}selected{% endif %}>
+                <option value="-1" {% if task_values.get(task['name'] ~ '_night') == "-1" %}selected{% endif %}>
                     Completed but bad
                 </option>
-                <option value="" {% if habit_values.get(habit['name'] ~ '_night') is none or habit_values.get(habit['name'] ~ '_night') == "" %}selected{% endif %}>
+                <option value="" {% if task_values.get(task['name'] ~ '_night') is none or task_values.get(task['name'] ~ '_night') == "" %}selected{% endif %}>
                     None
                 </option>
             </select><br>
         </fieldset>
         {% endfor %}
         
-        <button type="submit" name="action" value="Update Habits">Update Habits</button>
+        <button type="submit" name="action" value="Update Tasks">Update Tasks</button>
     </form>
 
     <div class="back-link">
-        <a href="{{ url_for('habit_tracker') }}">Go Back to Homepage</a>
+        <a href="{{ url_for('task_tracker') }}">Go Back to Homepage</a>
     </div>
 
     <script>
