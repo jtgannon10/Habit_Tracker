@@ -95,13 +95,13 @@
                     <button type="submit">Download Excel File</button>
                 </form>
                 <a href="{{ url_for('add_task') }}">
-                    <button type="button">Add New task</button>
+                    <button type="button">Add New Task</button>
                 </a>
                 <a href="{{ url_for('edit_task') }}">
-                    <button type="button">Edit task</button>
+                    <button type="button">Edit Task</button>
                 </a>
                 <a href="{{ url_for('update_tasks') }}">
-                    <button type="button">Update tasks</button>
+                    <button type="button">Update Tasks</button>
                 </a>
                 <a href="{{ url_for('set_goals') }}">
                     <button type="button">Set Goals</button>
@@ -110,10 +110,10 @@
                     <button type="button">Remove Date</button>
                 </a>
                 <a href="{{ url_for('plot_task_scores') }}">
-                    <button type="button">View task Scores Plots</button>
+                    <button type="button">View Task Scores Plots</button>
                 </a>
                 <a href="{{ url_for('plot_task_scores_for_each_task') }}">
-                    <button type="button">View task Scores for Each task Plots</button>
+                    <button type="button">View Task Scores for Each Task Plots</button>
                 </a>
             </div>
             <div class="color-picker">
@@ -124,7 +124,7 @@
 
         {% if name_description_frequency_goal_s %}
         <section id="tracked-tasks">
-            <h2>Tracked tasks</h2>
+            <h2>Tracked Tasks</h2>
             <ol>
                 {% for name_description_frequency_goal in name_description_frequency_goal_s %}
                 <li>
@@ -142,7 +142,7 @@
         </section>
 
         <section id="task-data">
-            <h2>task Data</h2>
+            <h2>Task Data</h2>
             <table>
                 <thead>
                     <tr>
