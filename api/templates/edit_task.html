@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Habit</title>
+    <title>Edit Task</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -68,42 +68,42 @@
     </style>
 </head>
 <body>
-    <h1>Edit Habit</h1>
+    <h1>Edit Task</h1>
 
-    <form method="POST" action="{{ url_for('edit_habit') }}">
-        <label for="current_name">Select Habit:</label>
+    <form method="POST" action="{{ url_for('edit_task') }}">
+        <label for="current_name">Select Task:</label>
         <select id="current_name" name="current_name">
-            {% for habit in habits %}
-                <option value="{{ habit }}" {% if habit == selected_habit %}selected{% endif %}>
-                    {{ habit }}
+            {% for task in tasks %}
+                <option value="{{ task }}" {% if task == selected_task %}selected{% endif %}>
+                    {{ task }}
                 </option>
             {% endfor %}
         </select>
         <button type="submit" name="action" value="load">Load Values</button>
     </form>
 
-    <form method="POST" action="{{ url_for('edit_habit') }}">
-        <input type="hidden" name="current_name" value="{{ selected_habit }}">
+    <form method="POST" action="{{ url_for('edit_task') }}">
+        <input type="hidden" name="current_name" value="{{ selected_task }}">
 
         <label for="new_name">New Name:</label>
-        <input type="text" id="new_name" name="new_name" value="{{ habit_details['name'] }}" required>
+        <input type="text" id="new_name" name="new_name" value="{{ task_details['name'] }}" required>
 
         <label for="new_description">New Description:</label>
-        <input type="text" id="new_description" name="new_description" value="{{ habit_details['description'] }}">
+        <input type="text" id="new_description" name="new_description" value="{{ task_details['description'] }}">
 
         <label for="new_frequency">New Frequency:</label>
         <select id="new_frequency" name="new_frequency">
-            <option value="daily" {% if habit_details['frequency'] == 'daily' %}selected{% endif %}>Daily</option>
-            <option value="weekly" {% if habit_details['frequency'] == 'weekly' %}selected{% endif %}>Weekly</option>
-            <option value="monthly" {% if habit_details['frequency'] == 'monthly' %}selected{% endif %}>Monthly</option>
-            <option value="yearly" {% if habit_details['frequency'] == 'yearly' %}selected{% endif %}>Yearly</option>
+            <option value="daily" {% if task_details['frequency'] == 'daily' %}selected{% endif %}>Daily</option>
+            <option value="weekly" {% if task_details['frequency'] == 'weekly' %}selected{% endif %}>Weekly</option>
+            <option value="monthly" {% if task_details['frequency'] == 'monthly' %}selected{% endif %}>Monthly</option>
+            <option value="yearly" {% if task_details['frequency'] == 'yearly' %}selected{% endif %}>Yearly</option>
         </select>
 
         <button type="submit" name="action" value="submit">Submit</button>
     </form>
 
     <div class="back-link">
-        <a href="{{ url_for('habit_tracker') }}">Back to Habit Tracker</a>
+        <a href="{{ url_for('task_tracker') }}">Back to Task Tracker</a>
     </div>
 
     <script>
