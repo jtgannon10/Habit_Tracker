@@ -13,12 +13,25 @@
         paypal.Buttons({
             createSubscription: function(data, actions) {
                 return actions.subscription.create({
-                    'plan_id': 'YOUR_PLAN_ID'  // Replace with your PayPal Plan ID
+                    'plan_id': 'P-94L4561418196102JM5AYT6A'  // Replace with your PayPal Plan ID
                 });
             },
             onApprove: function(data, actions) {
                 alert('Subscription successful!');
-                // Optionally, send `data.subscriptionID` to your server for backend processing
+                
+                // Send subscription data to the backend
+            fetch('/subscribe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    subscription_id: data.subscriptionID,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => console.log('Subscription saved:', data))
+            .catch(error => console.error('Error saving subscription:', error));
             }
         }).render('#paypal-button-container');
     </script>
