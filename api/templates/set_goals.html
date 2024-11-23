@@ -68,22 +68,22 @@
     </style>
 </head>
 <body>
-    <h1>Set Goals for Your Habits</h1>
+    <h1>Set Goals for Your Tasks</h1>
     <form method="POST" action="{{ url_for('set_goals') }}">
-        {% for habit in habits %}
+        {% for task in tasks %}
         <div>
-            <label for="{{ habit }}">
-                {{ habit }}:
+            <label for="{{ task }}">
+                {{ task }}:
             </label>
-            <input type="number" id="{{ habit }}" name="{{ habit }}" 
+            <input type="number" id="{{ task }}" name="{{ task }}" 
                 placeholder="Enter your goal" 
-                value="{{ current_goals.get(habit, '') }}">
+                value="{{ current_goals.get(task, '') }}">
         </div>
         {% endfor %}
         <button type="submit">Save Goals</button>
     </form>
     <div class="back-link">
-        <a href="{{ url_for('habit_tracker') }}">Back to Habit Tracker</a>
+        <a href="{{ url_for('task_tracker') }}">Back to Periodic Task Tracker</a>
     </div>
 
     <script>
