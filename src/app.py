@@ -129,24 +129,6 @@ def task_tracker():
     return render_template('index.html', name_description_frequency_goal_s=name_description_frequency_goal_s, table_data=table_data, columns=global_excel_df.columns.tolist())
 
 
-@app.route('/subscribe', methods=['GET', 'POST'])
-def subscribe():
-    if request.method == 'POST':
-        # Get subscription details from the request
-        data = request.json
-        subscription_id = data.get('subscription_id')
-
-        if subscription_id:
-            # Save subscription ID to Firestore
-            db.collection('subscriptions').add({'subscription_id': subscription_id})
-            return {'message': 'Subscription saved successfully!'}, 200
-        else:
-            return {'error': 'Subscription ID is missing'}, 400
-
-    # Render the subscribe.html template for GET requests
-    return render_template('subscribe.html')
-
-
 @app.route('/upload_excel', methods=['POST'])
 def upload_excel():
     global global_excel_df
