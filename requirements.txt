@@ -2,5 +2,6 @@ Flask==3.0.0  # Ensure compatibility with your Flask version
 matplotlib==3.8.0  # For plotting
 seaborn==0.12.2  # Visualization library dependent on matplotlib
 pandas==2.1.1  # For DataFrame operations
+gunicorn
 openpyxl
 xlsxwriter
