@@ -5,5 +5,3 @@ pandas==2.1.1  # For DataFrame operations
 gunicorn
 openpyxl
 xlsxwriter
-firebase-admin # For Firebase integration
-requests # For making HTTP requests (optional, but recommended)
