@@ -1,7 +1,5 @@
 # import sqlite3
 from flask import Flask, render_template, request, redirect, url_for
-import firebase_admin
-from firebase_admin import credentials, firestore
 from datetime import datetime
 import os
 import matplotlib.pyplot as plt
