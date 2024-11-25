@@ -21,6 +21,7 @@ import io
 
 app = Flask(__name__)
 # app.secret_key = 'your_secret_key_here'  # Required for flash messages to work
+app.debug = True
 
 # Initialize global variable for Excel DataFrame
 global_columns = ['name', 'frequency', 'description', 'goal', 'time_of_day']
