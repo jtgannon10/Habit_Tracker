@@ -18,7 +18,6 @@ from flask import send_file
 import io
 # from flask import flash
 
-
 app = Flask(__name__)
 # app.secret_key = 'your_secret_key_here'  # Required for flash messages to work
 app.debug = True
@@ -111,6 +110,11 @@ def task_tracker():
 
     # Render the index.html template with the task_times data
     return render_template('index.html', name_description_frequency_goal_s=name_description_frequency_goal_s, table_data=table_data, columns=global_excel_df.columns.tolist())
+
+
+@app.route('/favicon.ico')
+def favicon(): 
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon'
 
 
 @app.route('/upload_excel', methods=['POST'])
