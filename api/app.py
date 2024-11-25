@@ -17,6 +17,8 @@ from collections import defaultdict
 from flask import send_file
 import io
 # from flask import flash
+# Set the MPLCONFIGDIR environment variable to a writable directory
+os.environ['MPLCONFIGDIR'] = os.path.join(os.getcwd(), 'config')
 
 app = Flask(__name__)
 # app.secret_key = 'your_secret_key_here'  # Required for flash messages to work
